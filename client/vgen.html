@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+    <title>VGen</title>
+
+    <!-- Viewport mobile tag for sensible mobile support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <!-- Thirdparty styles -->
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="js/bootstrap-datepicker/css/bootstrap-datepicker.standalone.min.css">
+
+    <!-- Site styles -->
+    <link rel="stylesheet" href="styles/main.css">
+
+    <!-- Thirdparty scripts -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <!--
+    <script src="js/underscore-min.js"></script>
+    <script src="js/backbone-min.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+    -->
+    <script src="js/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script src="js/clipboard.min.js"></script>
+    <script src="js/moment-with-locales.min.js"></script>
+</head>
+
+<body>
+    <div class="body">
+        <div class="container">
+            <form class="form-inline" id="input-form">
+                <div class="form-group">
+                    <div class="input-group date" id="datepicker">
+                        <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                    <button type="button" class="btn btn-default" onclick="generate();"><i class="glyphicon glyphicon-flash"></i></button>
+                    <button type="button" class="btn btn-default" data-clipboard-target="#output"><i class="glyphicon glyphicon-copy"></i></button>
+                </div>
+            </form>
+            <div class="panel panel-default">
+                <pre class="panel-body" id="output"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            moment.locale('zh-cn')
+            new Clipboard('.btn');
+
+            $('#datepicker')
+                .datepicker({
+                    format: 'yyyy-mm',
+                    autoclose: true,
+                    todayBtn: true,
+                    todayHighlight: true
+                })
+                .datepicker('setDate', new Date())
+                .on('changeDate', function (e) {
+                    generate()
+                });
+        });
+
+        function generate() {
+            var d = $('#datepicker').datepicker('getDate')
+            var m1 = moment(d).startOf('month')
+            var m2 = moment(m1).endOf('month')
+
+            var lines = []
+            lines.push(m1.format('YYYY MMM'))
+            m = m1.subtract(1, 'days')
+            while (m.add(1, 'days').diff(m2) < 0) {
+                lines.push(m.format('LL dddd'))
+            }
+
+            lines.push('EoF')
+
+            $('#output').html(lines.join('\n'))
+        }
+    </script>
+
+</body>
+
+</html>
