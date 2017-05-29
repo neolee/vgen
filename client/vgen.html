@@ -49,7 +49,7 @@
     <script>
         $(document).ready(function () {
             moment.locale('zh-cn')
-            new Clipboard('.btn');
+            new Clipboard('.btn')
 
             $('#datepicker')
                 .datepicker({
@@ -70,13 +70,15 @@
             var m2 = moment(m1).endOf('month')
 
             var lines = []
-            lines.push(m1.format('YYYY MMM'))
+            
+            lines.push('# ' + m1.format('YYYY年MMM'))
+
             m = m1.subtract(1, 'days')
             while (m.add(1, 'days').diff(m2) < 0) {
-                lines.push(m.format('LL dddd'))
+                lines.push('')
+                lines.push('## ' + m.format('MMMD日 dddd'))
+                lines.push('- [ ] ')                
             }
-
-            lines.push('EoF')
 
             $('#output').html(lines.join('\n'))
         }
