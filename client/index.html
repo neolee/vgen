@@ -70,7 +70,7 @@
             var m2 = moment(d).endOf('month')
 
             var month = m1.format('YYYYMM')
-            $.getJSON('http://localhost:3000/holiday/holidays?month=' + month, function (data) {
+            $.getJSON('http://paradigmx.net:3000/holiday/holidays?month=' + month, function (data) {
                 var lines = []
 
                 lines.push('# ' + m1.format('YYYY年MMM'))
@@ -84,6 +84,23 @@
                     if (data.holidays.indexOf(day) > -1) {
                         line += '（休）'
                     }
+                    lines.push(line)
+
+                    lines.push('- [ ] ')
+                }
+
+                $('#output').html(lines.join('\n'))
+            })
+            .fail(function() {
+                var lines = []
+
+                lines.push('# ' + m1.format('YYYY年MMM'))
+
+                m = m1.subtract(1, 'days')
+                while (m.add(1, 'days').diff(m2) < 0) {
+                    lines.push('')
+
+                    var line = '## ' + m.format('MMMD日 dddd')
                     lines.push(line)
 
                     lines.push('- [ ] ')
